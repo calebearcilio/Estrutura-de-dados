@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "LibProjeto.h"
+#include "LibLista.h"
 
 int adicionandoDisciplinaNoAluno(Aluno *aluno)
 {
@@ -141,28 +141,28 @@ int main()
     inputInt("Digite a opcao desejada: ", &opcao);
     printf("\n");
 
-    if (opcao == 0) // FINALIZAR
+    if (opcao == 0)             // FINALIZAR
     {
       printf("Finalizando.");
       continue;
     }
 
-    else if (opcao == 1) // ADICIONAR
+    else if (opcao == 1)        // ADICIONAR
     {
       adicionandoAlunoNaLista(&listaAlunos);
     }
 
-    else if (opcao == 2) // REMOVER
+    else if (opcao == 2)        // REMOVER
     {
       removendoAlunoDaLista(&listaAlunos);
     }
 
-    else if (opcao == 3) // BUSCANDO
+    else if (opcao == 3)        // BUSCAR
     {
       BuscarAluno(&listaAlunos);
     }
 
-    else if (opcao == 4)
+    else if (opcao == 4)        // MOSTRAR
     {
       mostrarListaCompleta(&listaAlunos);
     }

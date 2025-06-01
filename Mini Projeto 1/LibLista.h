@@ -6,11 +6,11 @@
 #define TAMANHO_NOME 100
 
 /**
- * Função que recebe uma pergunta e uma variável do tipo char e um tamanho.
+ * Função para atribuir uma string em uma variável.
  *
  * @param pergunta A pergunta a ser exibida para o usuário.
- * @param variavel O ponteiro para a variável do tipo char que armazenará a entrada do usuário.
- * @param tamanho O tamanho máximo da entrada do usuário.
+ * @param variavel Endereço de memória para a variável do tipo char.
+ * @param tamanho Tamanho máximo da variável.
  *
  */
 void inputStr(const char *pergunta, char *variavel, int tamanho)
@@ -21,10 +21,10 @@ void inputStr(const char *pergunta, char *variavel, int tamanho)
 }
 
 /**
- * Função que recebe uma pergunta e uma variável do tipo int.
+ * Função para atribuir um valor int em uma variável.
  *
  * @param pergunta A pergunta a ser exibida para o usuário.
- * @param variavel O ponteiro para a variável do tipo int que armazenará a entrada do usuário.
+ * @param variavel O ponteiro para a variável do tipo int.
  */
 void inputInt(const char *pergunta, int *variavel)
 {
@@ -34,10 +34,10 @@ void inputInt(const char *pergunta, int *variavel)
 }
 
 /**
- * Função que recebe uma pergunta e uma variável do tipo float.
+ * Função para atribuir um valor float em uma variável.
  *
  * @param pergunta A pergunta a ser exibida para o usuário.
- * @param variavel O ponteiro para a variável do tipo float que armazenará a entrada do usuário.
+ * @param variavel O ponteiro para a variável do tipo float.
  */
 void inputFloat(const char *pergunta, float *variavel)
 {
