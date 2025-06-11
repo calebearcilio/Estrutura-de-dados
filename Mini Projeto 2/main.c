@@ -1,106 +1,130 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 #include "LibArvore.h"
-
-typedef struct aluno {
-  char nome[50];
-  int matricula;
-} Aluno;
-
-typedef struct no {
-  struct no *esq;
-  Aluno aluno;
-  struct no *dir;
-} No;
-
-/**
- * Função para criar um novo nó na árvore e inserir um aluno, usado na função inserirALuno()
- * 
- * @param aluno o aluno a ser inserido no nó
- * @return o endereço para do novo nó
- */
-No *criarNo(Aluno aluno){
-  No *novoNo = (No*)malloc(sizeof(No));
-
-  if (novoNo){
-    novoNo->esq = NULL;
-    novoNo->aluno = aluno;
-    novoNo->dir = NULL;
-  }
-  return novoNo;
-}
-
-/**
- * Função para inserir um novo aluno na árvore de forma ordenada de acordo com a matricula
- * 
- * @param raiz ponteiro de ponteiro para a raiz da árvore
- * @param aluno aluno a ser inserido na árvore
- * @return 1 caso a inserção funcione - 2 caso não
- */
-int inserirAluno(No **raiz, Aluno aluno){
-  
-  if(*raiz == NULL){
-    *raiz = criarNo(aluno);
-    return 1;
-  }
-
-  if((*raiz)->aluno.matricula > aluno.matricula){
-    inserirAluno(&((*raiz)->esq), aluno);
-  }
-  else if((*raiz)->aluno.matricula < aluno.matricula){
-    inserirAluno(&((*raiz)->dir), aluno);
-  }
-  
-  return 0; //Matrícula duplicada
-  
-}
-
-/**
- * Função usada para exibir o conteúdo da árvore em pré ordem
- * 
- * @param raiz raiz da árvore
- */
-void mostrarArvorePreOrdem(No *raiz){
-  if(raiz){
-    mostrarArvorePreOrdem(raiz->esq);
-    mostrarArvorePreOrdem(raiz->dir);
-    printf("%d - %s\n", raiz->aluno.matricula, raiz->aluno.nome);
-  }
-}
 
 int main()
 {
+  setlocale(LC_ALL, "pt-br.UTF-8");
   Aluno aluno;
   No *raiz = NULL;
 
-  
-  strcpy(aluno.nome, "Joao");
-  aluno.matricula = 3;
-  inserirAluno(&raiz, aluno); // Insere Joao
+  carregarArquivo(&raiz);
 
-  strcpy(aluno.nome, "Maria");
-  aluno.matricula = 1;
-  inserirAluno(&raiz, aluno); // Insere Maria
-  
-  strcpy(aluno.nome, "Jose");
-  aluno.matricula = 2;
-  inserirAluno(&raiz, aluno); // Insere Jose
-  
-  strcpy(aluno.nome, "Pedro");
-  aluno.matricula = 5;
-  inserirAluno(&raiz, aluno); // Insere Pedro
+  int opcao;
+  do
+  {
+    printf("\n");
+    printf("-----------------------------------------------------------\n");
+    printf("|          SISTEMA DE ALUNOS COM ÁRVORE BINÁRIA           |\n");
+    printf("-----------------------------------------------------------\n");
+    printf("|                     MENU PRINCIPAL                      |\n");
+    printf("-----------------------------------------------------------\n");
+    printf("| 0 - SAIR _______________ Encerrar programa              |\n");
+    printf("| 1 - INSERIR ALUNO ______ Fornecer RGM e Nome            |\n");
+    printf("| 2 - REMOVER ALUNO ______ Fornecer RGM                   |\n");
+    printf("| 3 - PESQUISAR ALUNO ____ Fornecer RGM                   |\n");
+    printf("| 4 - ESVAZIAR ÁRVORE ____ Remove todos os alunos         |\n");
+    printf("| 5 - EXIBIR ÁRVORE ______ Pré/In/Pós ordem               |\n");
+    printf("-----------------------------------------------------------\n");
+    printf("Opção: ");
 
-  mostrarArvorePreOrdem(raiz); // Mostra a arvore em  pre-ordem
+    scanf("%d", &opcao);
+    getchar();
 
-/*
-  removerAluno(&raiz, 123457); // Remove Maria
+    int rgm;
+    char nome[TAMANHO_NOME];
+    switch (opcao)
+    {
+    case 0:
+      printf("\n> ENCERRANDO PROGRAMA...\n");
+      printf("Obrigado por usar o sistema!\n");
+      break;
 
-  mostrarArvoreInOrdem(raiz); // Mostra a arvore apos a remocao de Maria em in-ordem
+    case 1:
+      printf("\n> INSERIR NOVO ALUNO\n");
+      printf("Informe o RGM: ");
+      scanf("%d", &rgm);
+      getchar();
+      aluno.matricula = rgm;
+      printf("Informe o nome: ");
+      fgets(nome, sizeof(nome), stdin);
+      nome[strcspn(nome, "\n")] = 0;
+      strcpy(aluno.nome, nome);
 
-  procurarAluno(raiz, 123458); // Procura Jose / mostra se o aluno esta na arvore ou nao
+      if (inserirAluno(&raiz, aluno))
+      {
+        printf("> Aluno inserido com sucesso!\n");
+      }
+      else
+      {
+        printf("> Erro: Matrícula já existe!\n");
+      }
+      break;
 
-  mostrarArvorePosOrdem(raiz); // Mostra a arvore em pos-ordem
-*/
+    case 2:
+      printf("\n> REMOVER ALUNO\n");
+      printf("Informe o RGM: ");
+      scanf("%d", &rgm);
+      getchar();
+      raiz = removerAluno(raiz, rgm);
+      break;
+
+    case 3:
+      printf("\n> PESQUISAR ALUNO\n");
+      printf("Informe o RGM: ");
+      scanf("%d", &rgm);
+      getchar();
+      procurarAluno(raiz, rgm);
+      break;
+
+    case 4:
+      printf("\n> ESVAZIAR ÁRVORE\n");
+      esvaziarArvore(&raiz);
+      printf("> Árvore esvaziada com sucesso!\n");
+      break;
+
+    case 5:
+      printf("\n> EXIBIR ÁRVORE\n");
+      printf("+-------------------------------------+\n");
+      printf("| Escolha o tipo de exibição:         |\n");
+      printf("| 1 - Pré-ordem                       |\n");
+      printf("| 2 - In-ordem (crescente)            |\n");
+      printf("| 3 - Pós-ordem                       |\n");
+      printf("+-------------------------------------+\n");
+      printf("Opção: ");
+      int tipo;
+      scanf("%d", &tipo);
+      getchar();
+
+      switch (tipo)
+      {
+      case 1:
+        printf("\n--- ÁRVORE EM PRÉ-ORDEM ---\n");
+        mostrarArvorePreOrdem(raiz);
+        break;
+      case 2:
+        printf("\n--- ÁRVORE EM IN-ORDEM ---\n");
+        mostrarArvoreInOrdem(raiz);
+        break;
+      case 3:
+        printf("\n--- ÁRVORE EM PÓS-ORDEM ---\n");
+        mostrarArvorePosOrdem(raiz);
+        break;
+      default:
+        printf("> Opção inválida!\n");
+        break;
+      }
+      break;
+
+    default:
+      printf("\n> Opção inválida! Tente novamente.\n");
+      break;
+    }
+
+  } while (opcao != 0);
+
+  esvaziarArvore(&raiz);
   return 0;
 }
